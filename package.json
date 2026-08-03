@@ -1,0 +1,16 @@
+{
+  "name": "nextbite",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "npm@11.12.1",
+  "scripts": {
+    "dev:web": "npm --workspace @nextbite/web run dev",
+    "dev:api": "cd apps/api && .venv/bin/uvicorn app.main:app --reload",
+    "lint": "npm --workspace @nextbite/web run lint",
+    "typecheck": "npm --workspace @nextbite/web run typecheck",
+    "test:web": "npm --workspace @nextbite/web run test",
+    "test:api": "cd apps/api && .venv/bin/python -m pytest",
+    "test": "npm run test:web && npm run test:api"
+  },
+  "workspaces": ["apps/web"]
+}
