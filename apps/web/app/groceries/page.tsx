@@ -13,6 +13,20 @@ const groceryStorageKey = "nextbite.grocery-items";
 const fallbackStores = ["Walmart", "Costco", "Asian Market"];
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+function ingredientTotals(meals: Recipe[]) {
+  const totals = new Map<string, { amount: number; unit: string; fallback: string }>();
+  meals.forEach((meal) => (meal.ingredients ?? []).forEach((ingredient) => {
+    const match = ingredient.quantity.trim().match(/^(\d+(?:\.\d+)?|\d+\/\d+)\s*(.*)$/);
+    const key = ingredient.name.toLowerCase();
+    if (!match) { if (!totals.has(key)) totals.set(key, { amount: 0, unit: "", fallback: ingredient.quantity }); return; }
+    const amount = match[1].includes("/") ? (() => { const [top, bottom] = match[1].split("/").map(Number); return top / bottom; })() : Number(match[1]);
+    const current = totals.get(key);
+    if (!current) totals.set(key, { amount, unit: match[2], fallback: "" });
+    else if (current.unit === match[2]) current.amount += amount;
+  }));
+  return new Map([...totals].map(([name, total]) => [name, total.amount ? `${Number.isInteger(total.amount) ? total.amount : total.amount.toFixed(2).replace(/0+$/, "")} ${total.unit}`.trim() : total.fallback]));
+}
+
 export default function GroceriesPage() {
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [mealDetails, setMealDetails] = useState<Recipe[]>([]);
@@ -79,5 +93,6 @@ export default function GroceriesPage() {
     }
   }
 
-  return <main><Link className="brand" href="/">NextBite</Link><section className="recommendation-header"><p className="eyebrow">Shopping list</p><h1>Groceries, sorted your way.</h1><p className="lede">Review each meal’s quantities, then use the combined list below to shop.</p><button onClick={() => void copyIngredients()} type="button">Copy ingredients</button><p aria-live="polite" className="copy-status">{copyStatus}</p></section>{error ? <section className="error-card"><p>{error}</p><Link className="button" href="/plan">Build a plan</Link></section> : isLoading ? <LoadingSpinner label="Sorting your grocery list…" /> : <><section className="meal-ingredient-list"><h2>Ingredients by meal</h2>{mealDetails.map((meal) => <article className="recipe-card" key={meal.id}><h3>{meal.title}</h3><ul>{(meal.ingredients?.length ? meal.ingredients : meal.key_ingredients.map((name) => ({ name, quantity: "Amount not available" }))).map((ingredient) => <li key={ingredient.name}>{ingredient.quantity} {ingredient.name}</li>)}</ul></article>)}</section><section className="combined-groceries"><h2>Combined grocery list</h2><div className="grocery-board">{stores.map((store) => <section className="store-column" key={store} onDragOver={(event) => event.preventDefault()} onDrop={(event) => moveItem(event, store)}><h2>{store}</h2>{["Produce", "Meat & protein", "Dairy", "Bakery", "Frozen", "Pantry", "Other"].map((category) => { const categoryItems = items.filter((item) => item.store === store && item.category === category); return categoryItems.length > 0 ? <div className="grocery-category" key={category}><h3>{category}</h3>{categoryItems.map((item) => <label className={`grocery-item ${item.checked ? "grocery-item-checked" : ""}`} draggable key={item.id} onDragStart={(event) => event.dataTransfer.setData("text/plain", item.id)}><input checked={item.checked} onChange={() => toggleItem(item.id)} type="checkbox" />{item.name}</label>)}</div> : null; })}</section>)}</div></section></>}</main>;
+  const totals = ingredientTotals(mealDetails);
+  return <main><Link className="brand" href="/">NextBite</Link><section className="recommendation-header"><p className="eyebrow">Shopping list</p><h1>Groceries, sorted your way.</h1><p className="lede">Review each meal’s quantities, then use the combined list below to shop.</p><button onClick={() => void copyIngredients()} type="button">Copy ingredients</button><p aria-live="polite" className="copy-status">{copyStatus}</p></section>{error ? <section className="error-card"><p>{error}</p><Link className="button" href="/plan">Build a plan</Link></section> : isLoading ? <LoadingSpinner label="Sorting your grocery list…" /> : <><section className="meal-ingredient-list"><h2>Ingredients by meal</h2>{mealDetails.map((meal) => <article className="recipe-card" key={meal.id}><h3>{meal.title}</h3><ul>{(meal.ingredients?.length ? meal.ingredients : meal.key_ingredients.map((name) => ({ name, quantity: "Amount not available" }))).map((ingredient) => <li key={ingredient.name}>{ingredient.quantity} {ingredient.name}</li>)}</ul></article>)}</section><section className="combined-groceries"><h2>Combined grocery list</h2><div className="grocery-board">{stores.map((store) => <section className="store-column" key={store} onDragOver={(event) => event.preventDefault()} onDrop={(event) => moveItem(event, store)}><h2>{store}</h2>{["Produce", "Meat & protein", "Dairy", "Bakery", "Frozen", "Pantry", "Other"].map((category) => { const categoryItems = items.filter((item) => item.store === store && item.category === category); return categoryItems.length > 0 ? <div className="grocery-category" key={category}><h3>{category}</h3>{categoryItems.map((item) => <label className={`grocery-item ${item.checked ? "grocery-item-checked" : ""}`} draggable key={item.id} onDragStart={(event) => event.dataTransfer.setData("text/plain", item.id)}><input checked={item.checked} onChange={() => toggleItem(item.id)} type="checkbox" /><span>{totals.get(item.name.toLowerCase()) ? `${totals.get(item.name.toLowerCase())} ` : ""}{item.name}</span></label>)}</div> : null; })}</section>)}</div></section></>}</main>;
 }
