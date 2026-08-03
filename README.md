@@ -16,31 +16,25 @@ NextBite is a personalized weeknight meal-planning app. It collects a food profi
 ### Prerequisites
 
 - Node.js 20+
-- Python 3.11+
-- Docker Desktop (only needed for the included PostgreSQL service)
 - An [OpenAI API key](https://platform.openai.com/api-keys). The app will not generate recommendations without one.
 
 ### Setup
 
-1. Copy the example environment file: `cp .env.example apps/api/.env`.
-2. In `apps/api/.env`, set `OPENAI_API_KEY` to your key. Keep it private; it is used only by the backend.
-3. Start PostgreSQL: `docker compose up -d db`.
-4. Install frontend dependencies: `npm install`.
-5. Create the API virtual environment and install dependencies:
+1. Create `apps/web/.env.local` and add your key:
 
    ```bash
-   python3 -m venv apps/api/.venv
-   apps/api/.venv/bin/pip install -r apps/api/requirements.txt
+   OPENAI_API_KEY=your_openai_key
+   OPENAI_MODEL=gpt-4o
    ```
 
-6. In separate terminals, start the web app and API:
+2. Install dependencies and run the app:
 
    ```bash
+   npm install
    npm run dev:web
-   npm run dev:api
    ```
 
-7. Visit `http://localhost:3000`. The API health check is at `http://localhost:8000/api/health`.
+3. Visit `http://localhost:3000`.
 
 ## Environment variables
 
@@ -48,19 +42,16 @@ NextBite is a personalized weeknight meal-planning app. It collects a food profi
 | --- | --- | --- |
 | `OPENAI_API_KEY` | Yes | Generates personalized recipe recommendations. |
 | `OPENAI_MODEL` | No | OpenAI model, defaults to `gpt-4o`. |
-| `DATABASE_URL` | No | PostgreSQL connection; the local Docker default is supplied. |
-| `NEXT_PUBLIC_API_URL` | No | Frontend-to-backend URL, defaults to `http://localhost:8000`. |
 
 ## Deploy the app
 
-The Next.js frontend and FastAPI backend are separate services. Vercel hosts the frontend, while the API must be publicly deployed for other people to use the app.
+NextBite uses Vercel route handlers for its secure OpenAI calls. There is no separate API service to deploy and no public backend URL to configure.
 
-1. In [Render](https://render.com/), create a **Blueprint** service from this repository. The included `render.yaml` deploys `apps/api` and permits requests from `https://nextbite-web-seven.vercel.app`.
-2. In Render, set the required `OPENAI_API_KEY` environment variable. After deployment, copy the API URL, for example `https://nextbite-api.onrender.com`.
-3. In Vercel → the NextBite project → **Settings** → **Environment Variables**, set `NEXT_PUBLIC_API_URL` to that API URL. Apply it to Production (and Preview too, if you use preview deployments).
-4. Redeploy the Vercel project. Confirm the backend is live by visiting `https://your-api-domain/api/health`.
+1. In Vercel → NextBite → **Settings** → **Environment Variables**, add `OPENAI_API_KEY` with your key as its value. Apply it to Production (and Preview too, if you use previews).
+2. Optionally add `OPENAI_MODEL` with the value `gpt-4o`.
+3. Redeploy the Vercel project.
 
-Never put `OPENAI_API_KEY` in Vercel as a `NEXT_PUBLIC_` variable; that would expose it to every browser.
+Never name the key `NEXT_PUBLIC_OPENAI_API_KEY`; variables with the `NEXT_PUBLIC_` prefix are exposed to browsers.
 
 ## Checks
 

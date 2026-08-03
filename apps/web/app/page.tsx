@@ -15,7 +15,7 @@ const favoritesStorageKey = "nextbite.favorite-recipes";
 const rejectedStorageKey = "nextbite.rejected-recipes";
 const groceryStorageKey = "nextbite.grocery-items";
 const groceryStaleStorageKey = "nextbite.grocery-list-stale";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const apiUrl = "";
 
 function mealCountFromProfile() {
   const savedProfile = window.localStorage.getItem("nextbite.food-profile");

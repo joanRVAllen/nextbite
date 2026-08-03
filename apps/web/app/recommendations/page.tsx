@@ -18,7 +18,7 @@ interface Recommendation {
 
 interface ApiResponse { recommendations: Recommendation[] }
 type Decision = "try" | "rejected";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const apiUrl = "";
 const decisionStorageKey = "nextbite.recipe-decisions";
 const recommendationsStorageKey = "nextbite.recipe-recommendations";
 

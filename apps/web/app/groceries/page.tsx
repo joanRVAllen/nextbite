@@ -11,7 +11,7 @@ interface GroceryItem { id: string; name: string; category: string; store: strin
 const planStorageKey = "nextbite.active-meal-plan";
 const groceryStorageKey = "nextbite.grocery-items";
 const fallbackStores = ["Walmart", "Costco", "Asian Market"];
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const apiUrl = "";
 
 function ingredientTotals(meals: Recipe[]) {
   const totals = new Map<string, { amount: number; unit: string; fallback: string }>();

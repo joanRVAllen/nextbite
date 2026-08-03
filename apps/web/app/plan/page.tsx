@@ -10,7 +10,7 @@ interface Recipe { id: string; title: string; cuisine: string; prep_minutes: num
 interface Recommendation extends Omit<Recipe, "source"> { description: string; difficulty: string; why_it_matches: string }
 interface MealPlan { meals: Recipe[]; alternatives: Recipe[] }
 interface Profile extends RecommendationProfile { favoriteMeals: string; mealsPerWeek: string; planningPriorities?: string[] }
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const apiUrl = "";
 const planStorageKey = "nextbite.active-meal-plan";
 const decisionsStorageKey = "nextbite.recipe-decisions";
 const recommendationsStorageKey = "nextbite.recipe-recommendations";
