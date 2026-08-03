@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: nextbite-api
+    runtime: python
+    rootDir: apps/api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o
+      - key: BACKEND_CORS_ORIGINS
+        value: https://nextbite-web-seven.vercel.app

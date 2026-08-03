@@ -51,6 +51,17 @@ NextBite is a personalized weeknight meal-planning app. It collects a food profi
 | `DATABASE_URL` | No | PostgreSQL connection; the local Docker default is supplied. |
 | `NEXT_PUBLIC_API_URL` | No | Frontend-to-backend URL, defaults to `http://localhost:8000`. |
 
+## Deploy the app
+
+The Next.js frontend and FastAPI backend are separate services. Vercel hosts the frontend, while the API must be publicly deployed for other people to use the app.
+
+1. In [Render](https://render.com/), create a **Blueprint** service from this repository. The included `render.yaml` deploys `apps/api` and permits requests from `https://nextbite-web-seven.vercel.app`.
+2. In Render, set the required `OPENAI_API_KEY` environment variable. After deployment, copy the API URL, for example `https://nextbite-api.onrender.com`.
+3. In Vercel → the NextBite project → **Settings** → **Environment Variables**, set `NEXT_PUBLIC_API_URL` to that API URL. Apply it to Production (and Preview too, if you use preview deployments).
+4. Redeploy the Vercel project. Confirm the backend is live by visiting `https://your-api-domain/api/health`.
+
+Never put `OPENAI_API_KEY` in Vercel as a `NEXT_PUBLIC_` variable; that would expose it to every browser.
+
 ## Checks
 
 Run `npm run lint`, `npm run typecheck`, and `npm test`.
