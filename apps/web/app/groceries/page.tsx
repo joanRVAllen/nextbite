@@ -79,15 +79,16 @@ export default function GroceriesPage() {
   }
 
   async function copyIngredients() {
+    const remainingItems = items.filter((item) => !item.checked);
     const storesWithItems = [...new Set([...stores, ...items.map((item) => item.store)])];
     const list = storesWithItems
-      .map((store) => ({ store, items: items.filter((item) => item.store === store) }))
+      .map((store) => ({ store, items: remainingItems.filter((item) => item.store === store) }))
       .filter((group) => group.items.length > 0)
       .map((group) => `${group.store}\n${group.items.map((item) => `- ${item.name}`).join("\n")}`)
       .join("\n\n");
     try {
       await navigator.clipboard.writeText(list);
-      setCopyStatus(`${items.length} ingredients copied.`);
+      setCopyStatus(`${remainingItems.length} unchecked ingredients copied.`);
     } catch {
       setCopyStatus("Could not copy ingredients. Please try again.");
     }
