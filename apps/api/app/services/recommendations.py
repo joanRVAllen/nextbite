@@ -27,7 +27,7 @@ class RecommendationService:
                 instructions=(
                     "You are NextBite's dinner recommendation assistant. Create practical, distinct weeknight dinners. "
                     "Respect allergies and dietary needs. Do not claim recipes are authentic or medically suitable. "
-                    "Return exactly ten recipe recommendations that meet the supplied response schema."
+                    "Return exactly ten recipe recommendations that meet the supplied response schema. Include a complete, practical ingredient list with purchase quantities for two servings and 3-7 clear cooking steps for every recipe."
                 ),
                 input=self._profile_prompt(profile),
                 text_format=RecommendationResponse,

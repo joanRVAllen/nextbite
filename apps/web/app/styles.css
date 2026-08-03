@@ -64,11 +64,22 @@ textarea:focus, .choice:has(input:focus-visible) { outline: 3px solid #bdd9ad; o
 .plan-actions .button { margin: 0; }
 .plan-grid { display: grid; gap: 18px; margin-top: 40px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 .plan-loading { margin-top: 48px; color: #687266; font-size: 1.1rem; }
+.loading-spinner { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 140px; margin-top: 36px; color: #586256; font-weight: 700; }
+.loading-spinner-compact { display: inline-flex; min-height: auto; margin: 0; font-size: .95rem; }
+.spinner { width: 26px; height: 26px; border: 3px solid #d9e5d1; border-top-color: #2e6b45; border-radius: 50%; animation: spin .75s linear infinite; }
+.loading-spinner-compact .spinner { width: 17px; height: 17px; border-width: 2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .swap-button { margin-top: 12px; }
 .groceries-link { margin-top: 32px; }
 .week-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .week-actions .groceries-link { margin-bottom: 0; }
 .grocery-board { display: grid; gap: 18px; margin-top: 40px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.meal-ingredient-list, .combined-groceries { margin-top: 48px; }
+.meal-ingredient-list > h2, .combined-groceries > h2 { font-size: 2rem; }
+.meal-ingredient-list { display: grid; gap: 18px; }
+.meal-ingredient-list > h2 { margin-bottom: 0; }
+.meal-ingredient-list ul { display: grid; gap: 8px; margin: 16px 0 0; grid-template-columns: 1fr; }
+.meal-ingredient-list li { padding: 10px 12px; background: #f5f8f2; }
 .store-column { min-height: 280px; padding: 20px; border: 1px solid #dce5d6; border-radius: 18px; background: #f8faf6; }
 .store-column h2 { margin-top: 0; }
 .grocery-category { margin-top: 20px; }

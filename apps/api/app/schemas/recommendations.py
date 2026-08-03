@@ -23,6 +23,13 @@ class RecipeRecommendation(BaseModel):
     description: str
     key_ingredients: list[str] = Field(min_length=2, max_length=8)
     why_it_matches: str
+    ingredients: list["RecipeIngredient"] = Field(default_factory=list)
+    instructions: list[str] = Field(default_factory=list)
+
+
+class RecipeIngredient(BaseModel):
+    name: str
+    quantity: str
 
 
 class RecommendationResponse(BaseModel):
